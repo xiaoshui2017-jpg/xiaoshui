@@ -1,0 +1,82 @@
+port: 7890
+socks-port: 7891
+allow-lan: true
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+
+proxies:
+  - name: "JMS-c81s3"
+    type: vmess
+    server: c81s3.portablesubmarines.com
+    port: 16001
+    uuid: b8b8c60e-48c2-44a7-9dff-c4154100af8d
+    alterId: 0
+    cipher: auto
+    network: tcp
+    udp: true
+
+  - name: "JMS-c81s4"
+    type: vmess
+    server: c81s4.portablesubmarines.com
+    port: 16001
+    uuid: b8b8c60e-48c2-44a7-9dff-c4154100af8d
+    alterId: 0
+    cipher: auto
+    network: tcp
+    udp: true
+
+  - name: "JMS-c81s5"
+    type: vmess
+    server: c81s5.portablesubmarines.com
+    port: 16001
+    uuid: b8b8c60e-48c2-44a7-9dff-c4154100af8d
+    alterId: 0
+    cipher: auto
+    network: tcp
+    udp: true
+
+  - name: "JMS-c81s801"
+    type: vmess
+    server: c81s801.portablesubmarines.com
+    port: 16001
+    uuid: b8b8c60e-48c2-44a7-9dff-c4154100af8d
+    alterId: 0
+    cipher: auto
+    network: tcp
+    udp: true
+
+proxy-groups:
+  - name: "🚀 节点选择"
+    type: select
+    proxies:
+      - "自动选择"
+      - "故障转移"
+      - "JMS-c81s3"
+      - "JMS-c81s4"
+      - "JMS-c81s5"
+      - "JMS-c81s801"
+
+  - name: "自动选择"
+    type: url-test
+    proxies:
+      - "JMS-c81s3"
+      - "JMS-c81s4"
+      - "JMS-c81s5"
+      - "JMS-c81s801"
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
+  - name: "故障转移"
+    type: fallback
+    proxies:
+      - "JMS-c81s3"
+      - "JMS-c81s4"
+      - "JMS-c81s5"
+      - "JMS-c81s801"
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
+rules:
+  - GEOIP,CN,DIRECT
+  - MATCH,🚀 节点选择
